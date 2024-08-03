@@ -7,3 +7,4 @@ from scripts.LdtkJson import LdtkJSON
 class Assets:
     player: pygame.Surface
     ldtk: LdtkJSON
+    tileset: pygame.Surface

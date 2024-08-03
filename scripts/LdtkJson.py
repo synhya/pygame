@@ -32,11 +32,11 @@ def from_union(fs, x):
             return f(x)
         except:
             pass
-    # assert False
+    assert False
 
 
 def from_int(x: Any) -> int:
-    assert isinstance(x, int) # and not isinstance(x, bool)
+    assert isinstance(x, int) and not isinstance(x, bool)
     return x
 
 
@@ -1089,7 +1089,7 @@ class TypeEnum(Enum):
 class LayerDefinition:
     type: str
     """Type of the layer (*IntGrid, Entities, Tiles or AutoLayer*)"""
-    # auto_rule_groups: List[AutoLayerRuleGroup]
+    auto_rule_groups: List[AutoLayerRuleGroup]
     """Contains all the auto-layer rule definitions."""
     auto_source_layer_def_uid: Optional[int]
     auto_tileset_def_uid: Optional[int]
@@ -1177,8 +1177,9 @@ class LayerDefinition:
     use_async_render: bool
     """Asynchronous rendering option for large/complex layers"""
 
-    def __init__(self, type: str, auto_source_layer_def_uid: Optional[int], auto_tileset_def_uid: Optional[int], auto_tiles_killed_by_other_layer_uid: Optional[int], biome_field_uid: Optional[int], can_select_when_inactive: bool, display_opacity: float, doc: Optional[str], excluded_tags: List[str], grid_size: int, guide_grid_hei: int, guide_grid_wid: int, hide_fields_when_inactive: bool, hide_in_list: bool, identifier: str, inactive_opacity: float, int_grid_values: List[IntGridValueDefinition], int_grid_values_groups: List[IntGridValueGroupDefinition], parallax_factor_x: float, parallax_factor_y: float, parallax_scaling: bool, px_offset_x: int, px_offset_y: int, render_in_world_view: bool, required_tags: List[str], tile_pivot_x: float, tile_pivot_y: float, tileset_def_uid: Optional[int], layer_definition_type: TypeEnum, ui_color: Optional[str], uid: int, ui_filter_tags: List[str], use_async_render: bool) -> None:
+    def __init__(self, type: str, auto_rule_groups: List[AutoLayerRuleGroup], auto_source_layer_def_uid: Optional[int], auto_tileset_def_uid: Optional[int], auto_tiles_killed_by_other_layer_uid: Optional[int], biome_field_uid: Optional[int], can_select_when_inactive: bool, display_opacity: float, doc: Optional[str], excluded_tags: List[str], grid_size: int, guide_grid_hei: int, guide_grid_wid: int, hide_fields_when_inactive: bool, hide_in_list: bool, identifier: str, inactive_opacity: float, int_grid_values: List[IntGridValueDefinition], int_grid_values_groups: List[IntGridValueGroupDefinition], parallax_factor_x: float, parallax_factor_y: float, parallax_scaling: bool, px_offset_x: int, px_offset_y: int, render_in_world_view: bool, required_tags: List[str], tile_pivot_x: float, tile_pivot_y: float, tileset_def_uid: Optional[int], layer_definition_type: TypeEnum, ui_color: Optional[str], uid: int, ui_filter_tags: List[str], use_async_render: bool) -> None:
         self.type = type
+        self.auto_rule_groups = auto_rule_groups
         self.auto_source_layer_def_uid = auto_source_layer_def_uid
         self.auto_tileset_def_uid = auto_tileset_def_uid
         self.auto_tiles_killed_by_other_layer_uid = auto_tiles_killed_by_other_layer_uid
@@ -1216,7 +1217,7 @@ class LayerDefinition:
     def from_dict(obj: Any) -> 'LayerDefinition':
         assert isinstance(obj, dict)
         type = from_str(obj.get("__type"))
-        # auto_rule_groups = from_list(AutoLayerRuleGroup.from_dict, obj.get("autoRuleGroups"))
+        auto_rule_groups = from_list(AutoLayerRuleGroup.from_dict, obj.get("autoRuleGroups"))
         auto_source_layer_def_uid = from_union([from_none, from_int], obj.get("autoSourceLayerDefUid"))
         auto_tileset_def_uid = from_union([from_none, from_int], obj.get("autoTilesetDefUid"))
         auto_tiles_killed_by_other_layer_uid = from_union([from_none, from_int], obj.get("autoTilesKilledByOtherLayerUid"))
@@ -1249,12 +1250,12 @@ class LayerDefinition:
         uid = from_int(obj.get("uid"))
         ui_filter_tags = from_list(from_str, obj.get("uiFilterTags"))
         use_async_render = from_bool(obj.get("useAsyncRender"))
-        return LayerDefinition(type,  auto_source_layer_def_uid, auto_tileset_def_uid, auto_tiles_killed_by_other_layer_uid, biome_field_uid, can_select_when_inactive, display_opacity, doc, excluded_tags, grid_size, guide_grid_hei, guide_grid_wid, hide_fields_when_inactive, hide_in_list, identifier, inactive_opacity, int_grid_values, int_grid_values_groups, parallax_factor_x, parallax_factor_y, parallax_scaling, px_offset_x, px_offset_y, render_in_world_view, required_tags, tile_pivot_x, tile_pivot_y, tileset_def_uid, layer_definition_type, ui_color, uid, ui_filter_tags, use_async_render)
+        return LayerDefinition(type, auto_rule_groups, auto_source_layer_def_uid, auto_tileset_def_uid, auto_tiles_killed_by_other_layer_uid, biome_field_uid, can_select_when_inactive, display_opacity, doc, excluded_tags, grid_size, guide_grid_hei, guide_grid_wid, hide_fields_when_inactive, hide_in_list, identifier, inactive_opacity, int_grid_values, int_grid_values_groups, parallax_factor_x, parallax_factor_y, parallax_scaling, px_offset_x, px_offset_y, render_in_world_view, required_tags, tile_pivot_x, tile_pivot_y, tileset_def_uid, layer_definition_type, ui_color, uid, ui_filter_tags, use_async_render)
 
     def to_dict(self) -> dict:
         result: dict = {}
         result["__type"] = from_str(self.type)
-        # result["autoRuleGroups"] = from_list(lambda x: to_class(AutoLayerRuleGroup, x), self.auto_rule_groups)
+        result["autoRuleGroups"] = from_list(lambda x: to_class(AutoLayerRuleGroup, x), self.auto_rule_groups)
         if self.auto_source_layer_def_uid is not None:
             result["autoSourceLayerDefUid"] = from_union([from_none, from_int], self.auto_source_layer_def_uid)
         if self.auto_tileset_def_uid is not None:

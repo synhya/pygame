@@ -19,23 +19,32 @@ class Game:
 
         self.movement = [False, False, False, False]
 
+        player_idle=sheet_to_images(resize_image(load_image('entities/player.png'), 0.5))
+        
         self.assets = Assets(
-            player=load_image('entities/player.png'),
+            player=player_idle[0],
+            tileset=load_image('tilesets/cavesofgallet_tiles.png'),
             ldtk=load_ldtk()
         )
 
-        # print(self.assets['world'].get_layers())
+        self.base_color = pygame.Color("#171c39") 
+        self.player = PhysicsEntity(self, 'player', (50, 50), (6, 8))
 
-        self.player = PhysicsEntity(self, 'player', (50, 50), (8, 15))
-
-        self.tilemap = Tilemap(self, tile_size=16)
+        self.tilemap = Tilemap(self)
 
     def run(self):
         while True:
-            self.display.fill((14, 219, 248))
+            self.display.fill(self.base_color)
+            
+            self.tilemap.render(self.display)
 
             self.player.update((self.movement[1] - self.movement[0], 0))
             self.player.render(self.display)
+            
+            # debug
+            # draw_bordered_image(self.display, self.player.game.assets.player, tuple(self.player.pos))
+
+            print(self.tilemap.tiles_around(self.player.pos))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
