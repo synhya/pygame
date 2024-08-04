@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from game import Game
 
 NEIGHBOR_OFFSETS = [(-1, -1), (0, -1), (1, -1), (-1, 0), (0, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
+PHYSICS_TILES = [1]
 class Tilemap:
     def __init__(self, game: 'Game'):
         self.game = game
@@ -14,6 +15,13 @@ class Tilemap:
         # get tile instance list
         self.layer_instances = self.level.layer_instances 
         self.layer_instances.reverse()      
+        
+        for layer_instance in self.layer_instances:
+            tilemap = {}
+            for tile in layer_instance.auto_layer_tiles:
+                tilemap[(tile.px[0], tile.px[1])] = tile
+                
+            layer_instance.tilemap = tilemap
 
         # get tileset surface list
         tile_grid_size = game.assets.ldtk.defs.tilesets[0].tile_grid_size
@@ -40,20 +48,37 @@ class Tilemap:
                     tiles.append(
                         {
                             'layer_index': layer_index,
-                            'tile': layer_instance.int_grid_csv[index],
+                            'value': layer_instance.int_grid_csv[index],
                             'pos': (check_loc[0] * tile_size, check_loc[1] * tile_size)
                         }
                     )
             
         return tiles
+    
+    def physics_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['value'] in PHYSICS_TILES:
+                rects.append(pygame.Rect(tile['pos'], (self.layer_instances[tile['layer_index']].grid_size, self.layer_instances[tile['layer_index']].grid_size)))
         
-    def render(self, surf: pygame.Surface):
+        return rects
+        
+    def render(self, surf: pygame.Surface, offset):
         for layer_instance in self.layer_instances:
-            tilemap = layer_instance.auto_layer_tiles 
-            for tile in tilemap:
-                tile_surface = pygame.transform.flip(self.tileset[tuple(tile.src)], tile.f & 1, tile.f & 2)
-                tile_surface.set_alpha(int(tile.a * 255))
-                surf.blit(tile_surface, tuple(tile.px))
+            
+            
+            # tilemap = layer_instance.auto_layer_tiles 
+            # for tile in tilemap:
+            #     tile_surface = pygame.transform.flip(self.tileset[tuple(tile.src)], tile.f & 1, tile.f & 2)
+            #     tile_surface.set_alpha(int(tile.a * 255))
+                
+            #     if(layer_instance.type == 'AutoLayer'):
+            #         depth = 1 # 빈공간에서 안보이게 해줘야겠네..
+            #         render_pos = (tile.px[0] - offset[0] * depth, tile.px[1] - offset[1] * depth)
+            #     else:
+            #         render_pos = (tile.px[0] - offset[0], tile.px[1] - offset[1])
+                
+            #     surf.blit(tile_surface, render_pos)
         
     @staticmethod
     def load_tiles(tileset_image: pygame.Surface, tile_width, tile_height) -> list[pygame.Surface]:
