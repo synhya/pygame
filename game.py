@@ -19,7 +19,7 @@ class Game:
 
         self.movement = [False, False, False, False]
 
-        player_idle=sheet_to_images(resize_image(load_image('entities/player.png'), 0.5))
+        player_idle=sheet_to_images(load_image('entities/player.png'))
         
         self.assets = Assets(
             player=player_idle[0],
@@ -28,7 +28,7 @@ class Game:
         )
 
         self.base_color = pygame.Color("#171c39") 
-        self.player = PhysicsEntity(self, 'player', (50, 50), (7, 9))
+        self.player = PhysicsEntity(self, 'player', (50, 50), (10, 18), (-3, 0))
 
         self.tilemap = Tilemap(self)
         
@@ -38,8 +38,8 @@ class Game:
         while True:
             self.display.fill(self.base_color)
             
-            self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 8
-            self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 8
+            self.scroll[0] += (self.player.rect.centerx - self.display.get_width() / 2 - self.scroll[0]) / 8
+            self.scroll[1] += (self.player.rect.centery - self.display.get_height() / 2 - self.scroll[1]) / 8
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
             
             self.tilemap.render(self.display, offset = render_scroll)
@@ -48,7 +48,7 @@ class Game:
             self.player.render(self.display, offset = render_scroll)
             
             # debug
-            # draw_bordered_image(self.display, self.player.game.assets.player, tuple(self.player.pos))
+            # draw_bordered_image(self.display, self.player.rect, render_scroll)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
