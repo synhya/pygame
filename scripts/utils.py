@@ -29,20 +29,27 @@ def resize_image(image, scale: float):
 
 # 우선 x축으로만 길다고 가정
 # ++ 일단 메타정보 없이가고 나중에 pivot 필요하면 변경하는걸로.
-def sheet_to_images(sheet: pygame.Surface) -> list[pygame.Surface]:
+def sheet_to_images(sheet: pygame.Surface, grid_size = -1) -> list[pygame.Surface]:
     images = []
-    grid_size = sheet.get_height()
+    grid_size = grid_size if grid_size > 0 else sheet.get_height()
     for y in range(0, sheet.get_height(), grid_size):
         for x in range(0, sheet.get_width(), grid_size):
             grid_surface = sheet.subsurface(pygame.Rect(x, y, grid_size, grid_size))
-            images.append(grid_surface.subsurface(get_non_transparent_bounding_box(grid_surface)))
-            print(images[-1].get_size())
+            masked_rect = get_non_transparent_bounding_box(grid_surface)
+
+            if masked_rect.width > 0 and masked_rect.height > 0:
+                images.append(grid_surface.subsurface(masked_rect))
     
     return images
 
 def get_non_transparent_bounding_box(surface: pygame.Surface) -> pygame.Rect:
     mask = pygame.mask.from_surface(surface)
-    return mask.get_bounding_rects()[0]
+    bounding_rects = mask.get_bounding_rects()
+    
+    if bounding_rects:
+        return bounding_rects[0]
+    else:
+        return pygame.Rect(0, 0, 0, 0)
 
 # display
 def draw_bordered_image(surf: pygame.Surface, rect: pygame.FRect, offset: tuple[int, int] = (0, 0), border_color: tuple[int, int, int] = (255, 10, 10), border_width: int = 1):

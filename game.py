@@ -1,9 +1,8 @@
 import pygame
 
-from scripts.assets import Assets
-from scripts.entities import PhysicsEntity
+from scripts.entities import Player
 from scripts.utils import *
-from scripts.tilemap import Tilemap
+from scripts.LdtkTilemap import LdtkTilemap
 
 class Game:
     def __init__(self):
@@ -19,18 +18,22 @@ class Game:
 
         self.movement = [False, False, False, False]
 
-        player_idle=sheet_to_images(load_image('entities/player.png'))
-        
-        self.assets = Assets(
-            player=player_idle[0],
-            tileset=load_image('tilesets/cavesofgallet_tiles.png'),
-            ldtk=load_ldtk()
-        )
+        self.assets = {
+            "player": {
+                'idle': Animation(sheet_to_images(load_image('entities/player/Soldier-Idle.png')), 10, True),
+                'walk': Animation(sheet_to_images(load_image('entities/player/Soldier-Walk.png')), 3, True),
+                'hurt': Animation(sheet_to_images(load_image('entities/player/Soldier-Hurt.png')), 4, False),
+                'death': Animation(sheet_to_images(load_image('entities/player/Soldier-Death.png')), 4, False),
+                'attack': Animation(sheet_to_images(load_image('entities/player/Soldier-Attack01.png')), 4, False),
+            },
+            "tileset" : load_image('tilesets/cavesofgallet_tiles.png'),
+            "ldtk" : load_ldtk()
+        }
 
         self.base_color = pygame.Color("#171c39") 
-        self.player = PhysicsEntity(self, 'player', (50, 50), (10, 18), (-3, 0))
+        self.player = Player(self, (50, 50), (10, 18))
 
-        self.tilemap = Tilemap(self)
+        self.tilemap = LdtkTilemap(self)
         
         self.scroll = [0, 0]
 
