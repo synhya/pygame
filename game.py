@@ -29,10 +29,18 @@ class Game:
                 'death': Animation(sheet_to_images(load_image('entities/player/Soldier-Death.png')), 4, False),
                 'attack': Animation(sheet_to_images(load_image('entities/player/Soldier-Attack01.png')), 4, False),
             },
-            # "particle": {
-            #     "leaf": Animation(sheet_to_images(load_image('particles/leaf.png')), 20, False),
-            #     "particle": Animation(sheet_to_images(load_image('particles/leaf.png')), 6, False),
-            # },
+            "enemy": {
+                'idle': Animation(sheet_to_images(load_image('entities/mushroom/Mushroom-Idle.png')), 10, True),
+                'walk': Animation(sheet_to_images(load_image('entities/mushroom/Mushroom-Run.png')), 3, True),
+                'hurt': Animation(sheet_to_images(load_image('entities/mushroom/Mushroom-Hit.png')), 4, False),
+                'death': Animation(sheet_to_images(load_image('entities/mushroom/Mushroom-Die.png')), 4, False),
+                'attack': Animation(sheet_to_images(load_image('entities/mushroom/Mushroom-Attack.png')), 4, False),
+                'stun': Animation(sheet_to_images(load_image('entities/mushroom/Mushroom-Stun.png')), 4, False),
+            },
+            "particle": {
+                "leaf": Animation(load_images('particles/leaf'), 20, False),
+                "particle": Animation(load_images('particles/particle'), 6, False),
+            },
             "tileset" : load_image('tilesets/cavesofgallet_tiles.png'),
             "ldtk" : load_ldtk()
         }
@@ -45,6 +53,12 @@ class Game:
         self.leaf_spanwers = []
         self.particles = []
         # 해당 타일의 배열을 가져와서 hitbox만들자.
+
+        for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
+            if spawner['variant'] == 0:
+                self.player.pos = spawner['pos']
+            else:
+                print(spawner['pos'], 'enemy')
         
         self.scroll = [0, 0]
 
