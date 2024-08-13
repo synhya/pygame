@@ -1,5 +1,6 @@
 import math
 import random
+import sys
 import pygame
 
 from scripts.entities import Enemy, Player
@@ -197,7 +198,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         self.movement[0] = True
