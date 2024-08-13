@@ -29,15 +29,30 @@ def resize_image(image, scale: float):
 
 # 우선 x축으로만 길다고 가정
 # ++ 일단 메타정보 없이가고 나중에 pivot 필요하면 변경하는걸로.
-def sheet_to_images(sheet: pygame.Surface, grid_size = -1) -> list[pygame.Surface]:
+# Python에서 기본 인수로 가변 객체(예: 리스트, 딕셔너리)를 사용하면, 해당 객체는 함수가 호출될 때마다 재사용됩니다
+def sheet_to_images(sheet: pygame.Surface, grid_size = None, grid_count = -1, flip = False) -> list[pygame.Surface]:
+    if grid_size is None:
+        grid_size = [-1, -1]
+
     images = []
-    grid_size = grid_size if grid_size > 0 else sheet.get_height()
-    for y in range(0, sheet.get_height(), grid_size):
-        for x in range(0, sheet.get_width(), grid_size):
-            grid_surface = sheet.subsurface(pygame.Rect(x, y, grid_size, grid_size))
+
+    if grid_size[0] < 0:
+        if grid_count < 0:
+            grid_size[0] = sheet.get_height()
+        else:
+            grid_size[0] = int(sheet.get_width() / grid_count)
+    
+    if grid_size[1] < 0:
+        grid_size[1] = sheet.get_height()
+
+    for x in range(0, sheet.get_width(),grid_size[0]):
+        for y in range(0, sheet.get_height(),  grid_size[1]):
+            grid_surface = sheet.subsurface(pygame.Rect(x, y, *grid_size))
             masked_rect = get_non_transparent_bounding_box(grid_surface)
 
             if masked_rect.width > 0 and masked_rect.height > 0:
+                if flip:
+                    grid_surface = pygame.transform.flip(grid_surface, True, False)
                 images.append(grid_surface.subsurface(masked_rect))
     
     return images

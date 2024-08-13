@@ -18,7 +18,11 @@ class Editor:
         self.clock = pygame.time.Clock()
 
         self.assets = {
-            "tileset" : sheet_to_images(load_image('tilesets/cavesofgallet_tiles.png'), 8),
+            "tileset" : sheet_to_images(load_image('tilesets/cavesofgallet_tiles.png'), grid_size=[8, 8]),
+            "spawners" : [
+                sheet_to_images(load_image('entities/player/Soldier-Idle.png'))[0],
+                sheet_to_images(load_image('entities/mushroom/Mushroom-Idle.png'), grid_count=7)[0],
+            ]
         }
 
         self.movement = [False, False, False, False]

@@ -1,6 +1,9 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, List
 
 import pygame
+
+from scripts.LdtkJson import LayerInstance, TileInstance
+from scripts.utils import load_ldtk
 
 if TYPE_CHECKING:
     from game import Game
@@ -9,11 +12,22 @@ PHYSICS_TILES = [1]
 class LdtkTilemap:
     def __init__(self, game: 'Game'):
         self.game = game
-        self.level = game.assets["ldtk"].levels[0]
-        
+        self.tilemap = load_ldtk()
+
+        # 스프라이트가 너무 작은 경우 타일 확대.
+        self.mutiplier = 1.5
+
+        # get tileset surface list
+        tile_grid_size = self.tilemap.defs.tilesets[0].tile_grid_size
+        self.tileset = self.load_tiles(game.assets["tileset"], tile_grid_size, tile_grid_size)
+
+    def load_level(self, index):
+        self.level = self.tilemap.levels[index]
         # get tile instance list
-        self.layer_instances = self.level.layer_instances 
+        self.layer_instances: List[LayerInstance] = list(filter(lambda x: x.type != "Entities", self.level.layer_instances))
         self.layer_instances.reverse()      
+
+        self.entity_layer_instances: List[LayerInstance] = list(filter(lambda x: x.type == "Entities", self.level.layer_instances))
         
         for layer_instance in self.layer_instances:
             tilemap = {}
@@ -22,12 +36,18 @@ class LdtkTilemap:
                 
             layer_instance.tilemap = tilemap
 
-        # get tileset surface list
-        tile_grid_size = game.assets["ldtk"].defs.tilesets[0].tile_grid_size
-        self.tileset = self.load_tiles(game.assets["tileset"], tile_grid_size, tile_grid_size)
-
-        # 스프라이트가 너무 작은 경우 타일 확대.
-        self.mutiplier = 1.5
+        self.spawn_pos = {}
+        for layer_instance in self.entity_layer_instances:
+            for entity in layer_instance.entity_instances:
+                identifier = entity.identifier
+                position = entity.px
+                
+                if identifier in self.spawn_pos:
+                    # 이미 해당 identifier가 존재하면 리스트에 추가
+                    self.spawn_pos[identifier].append(position)
+                else:
+                    # 존재하지 않으면 새로운 리스트로 저장
+                    self.spawn_pos[identifier] = [position]
 
     def tiles_around(self, pos):
         tiles = []
@@ -57,6 +77,20 @@ class LdtkTilemap:
                             }
                         )
         return tiles
+    
+    def solid_check(self, pos):
+        for layer_instance in self.layer_instances:
+            if layer_instance.int_grid_csv == None or len(layer_instance.int_grid_csv) == 0:
+                continue
+
+            tile_size = layer_instance.grid_size * self.mutiplier
+            tile_loc = (int(pos[0] // tile_size), int(pos[1] // tile_size))
+
+            index = tile_loc[1] * layer_instance.c_wid + tile_loc[0]
+
+            if layer_instance.int_grid_csv[index] in PHYSICS_TILES: # walls
+                return layer_instance.tilemap[(tile_loc[0] * layer_instance.grid_size, tile_loc[1] * layer_instance.grid_size)]
+
     
     def physics_rects_around(self, pos):
         rects = []
