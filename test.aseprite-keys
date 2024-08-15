@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<keyboard version="1">
+    <commands>
+        <key command="ChangeBrush" shortcut="+ Pad" removed="true">
+            <param name="change" value="increment-size" />
+        </key>
+        <key command="ChangeBrush" shortcut="=" removed="true">
+            <param name="change" value="increment-size" />
+        </key>
+        <key command="ChangeBrush" shortcut="+" removed="true">
+            <param name="change" value="increment-size" />
+        </key>
+        <key command="ChangeBrush" shortcut="3" removed="true">
+            <param name="change" value="increment-size" />
+        </key>
+        <key command="ChangeBrush" shortcut="4">
+            <param name="change" value="increment-size" />
+        </key>
+        <key command="ChangeBrush" shortcut="-" removed="true">
+            <param name="change" value="decrement-size" />
+        </key>
+        <key command="ChangeBrush" shortcut="- Pad" removed="true">
+            <param name="change" value="decrement-size" />
+        </key>
+        <key command="ChangeBrush" shortcut="3">
+            <param name="change" value="decrement-size" />
+        </key>
+        <key command="Zoom" shortcut="1" removed="true">
+            <param name="percentage" value="100" />
+        </key>
+        <key command="Zoom" shortcut="2" removed="true">
+            <param name="percentage" value="200" />
+        </key>
+        <key command="Zoom" shortcut="3" removed="true">
+            <param name="percentage" value="400" />
+        </key>
+        <key command="Zoom" shortcut="4" removed="true">
+            <param name="percentage" value="800" />
+        </key>
+        <key command="Zoom" shortcut="Ctrl+Shift+=" removed="true">
+            <param name="action" value="in" />
+        </key>
+        <key command="Zoom" shortcut="Ctrl+=" removed="true">
+            <param name="action" value="in" />
+        </key>
+        <key command="Zoom" shortcut="Ctrl++" removed="true">
+            <param name="action" value="in" />
+        </key>
+        <key command="Zoom" shortcut="1">
+            <param name="action" value="in" />
+        </key>
+        <key command="Zoom" shortcut="Ctrl+-" removed="true">
+            <param name="action" value="out" />
+        </key>
+        <key command="Zoom" shortcut="2">
+            <param name="action" value="out" />
+        </key>
+    </commands>
+    <tools>
+        <key tool="magic_wand" shortcut="W" removed="true" />
+        <key tool="pencil" shortcut="B" removed="true" />
+        <key tool="pencil" shortcut="E" />
+        <key tool="eraser" shortcut="E" removed="true" />
+        <key tool="eraser" shortcut="W" />
+    </tools>
+    <quicktools />
+    <actions />
+    <wheel />
+</keyboard>
